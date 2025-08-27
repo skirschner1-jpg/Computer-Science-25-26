@@ -7,8 +7,8 @@ public class PugSaver {
 	public static void rescuePugs(ArrayList<Dog> list) {
 		int end = list.size - 1;
 		for (int i = 0; i < list.size(); i++){
-			if (list.indexOf(i).contains("golden")) {
-				for(int j = list.size-1; j >0; j--){
+			if (list.indexOf(i).indexof("golden") == true) {
+				for(int j = list.size-1; j > 0; j--){
 					if (!list(j).contains("golden")){
 						end = j;
 						j = 0;
