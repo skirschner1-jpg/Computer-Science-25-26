@@ -57,7 +57,7 @@ public class MyArrayList<E> {
 	 otherwise returns false. */
 	public boolean contains(E obj) {
 		for (int i = 0; i < objectCount; i++) {
-			if (get(i) == obj) {
+			if (get(i) == obj || get(i).equals(obj)) {
 				return true;
 			}
 		}
@@ -74,12 +74,29 @@ public class MyArrayList<E> {
 	/* Add an object to the end of the list; returns true */
 	@SuppressWarnings("unchecked")
 	public boolean add(E obj) {
-		/* ---- YOUR CODE HERE ---- */
+		Object[] result = new Object[size() + 1];
+		for (int i = 0; i < result.length; i++) {
+			if (i < result.length - 1) {
+				result[i] = get(i);
+			}
+			result[i] = obj;
+		}
+		return true;
 	}
 
 	/* Remove the object at index and shift.  Returns removed object. */
 	public E remove(int index) {
-		/* ---- YOUR CODE HERE ---- */
+		E[] result = new E[size() - 1];
+		E removed = get(index);
+		int j = 0;
+		for (int i = 0; i < result.length; i++) {
+			if (i == index) {
+				j++;
+			}
+			result[i] = get(j);
+		}
+		internalArray.set(result);
+		return removed;
 	}
 
 	/* Removes the first occurrence of the specified element from this list, 
@@ -97,7 +114,16 @@ public class MyArrayList<E> {
 	 * If the array is empty, it should return "[]".  If there is one element, "[X]", etc.
 	 * Elements are separated by a comma and a space. */
 	public String toString() {
-		/* ---- YOUR CODE HERE ---- */
+		String result = new String("[");
+		for (int i = 0; i < size(); i++) {
+			result = result + get(i);
+			if (i != size() - 1) {
+				result = result + ", ";
+			}
+		}
+		result = result + "]";
+		System.out.println(result);
+		return result;
 	}
 
 }
