@@ -43,7 +43,9 @@ public class MyArrayList<E> {
 
 	/* Get the index-th object in the list. */
 	public E get(int index) {
-		/* ---- YOUR CODE HERE ---- */
+		return internalArray[index];
+		// DONE
+		// O(1)
 	}
 
 	/* Replace the object at index with obj.  returns object that was replaced. */
@@ -51,6 +53,7 @@ public class MyArrayList<E> {
 		E original = get(index);
 		/* ---- YOUR CODE HERE ---- */
 		return original;
+		// O(1)
 	}
 
 	/* Returns true if this list contains an element equal to obj;
@@ -63,6 +66,7 @@ public class MyArrayList<E> {
 		}
 		return false;
 		// DONE
+		// O(1)
 	}
 
 	/* Insert an object at index */
@@ -124,6 +128,7 @@ public class MyArrayList<E> {
 		result = result + "]";
 		System.out.println(result);
 		return result;
+		// O(n)
 	}
 
 }
