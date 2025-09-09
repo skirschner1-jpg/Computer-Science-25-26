@@ -6,6 +6,8 @@
  * Your indexed functions should throw IndexOutOfBoundsException if index is invalid!
  */
 
+import java.util.StringBuilder;
+
 public class MyArrayList<E> {
 
 	/* Internal Object counter */

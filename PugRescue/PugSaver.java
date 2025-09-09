@@ -5,11 +5,11 @@ public class PugSaver {
 
 	//Moves every dog whose breed is "Golden Something" in the list to the back of the list
 	public static void rescuePugs(ArrayList<Dog> list) {
-		int end = list.size - 1;
+		int end = list.size() - 1;
 		for (int i = 0; i < list.size(); i++){
-			if (list.indexOf(i).indexof("golden") == true) {
-				for(int j = list.size-1; j > 0; j--){
-					if (!list(j).contains("golden")){
+			if (list.get(i).getName().contains("golden") == true) {
+				for(int j = list.size()-1; j > 0; j--){
+					if (!list.get(j).getName().contains("golden")){
 						end = j;
 						j = 0;
 					}
