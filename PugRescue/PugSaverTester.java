@@ -17,7 +17,9 @@ public class PugSaverTester {
 
         PugSaver.rescuePugs(doglist);
 
-        doglist.toString();
+        for (int i = 0; i < doglist.size(); i++) {
+            System.out.println(doglist.get(i).getBreed() +  ", ");
+        }
        
     }
 }
