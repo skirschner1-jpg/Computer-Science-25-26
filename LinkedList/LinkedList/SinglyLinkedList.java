@@ -71,13 +71,20 @@ public class SinglyLinkedList<E> {
 	public boolean add(E obj) {
 		ListNode<E> addition = new ListNode(obj);
 		if (isEmpty()) {
+			System.out.print("here: is empty; adding ");
+			System.out.println(addition.getValue());
 			set(0, obj);
+		} else {
+			System.out.print("here: adding ");
+			System.out.println(addition.getValue());
+			tail.setNext(addition);
 		}
-		getTail().setNext(addition);
 		tail = addition;
+		nodeCount +=1;
 		return true;
 	}
-	// DONE
+	// NOT DONE
+	// adding null in else block :(
 
 	// Removes the first element that is equal to obj, if any.
 	// Returns true if successful; otherwise returns false.
@@ -95,6 +102,7 @@ public class SinglyLinkedList<E> {
 			thisNode = thisNode.getNext();
 			prevNode = prevNode.getNext();
 		}
+		nodeCount -=1;
 		return false;
 	}
 	// DONE
@@ -104,28 +112,41 @@ public class SinglyLinkedList<E> {
 		ListNode<E> thisNode = getHead();
 		for (int j = 0; j < i; j++) {
 			if (thisNode == null) {
-				throw new IndexOutOfBoundsException();
+				throw new NullPointerException();
 			}
 			thisNode = thisNode.getNext();
 		}
 		return thisNode.getValue();
 	}
-	// DONE
+	// NOT DONE
 
 	// Replaces the i-th element with obj and returns the old value.
 	public E set(int i, Object obj) {
-		
+		if (isEmpty()) {
+			String toReturn = "No previous object";
+			ListNode newNode = new ListNode((E) obj);
+			head = newNode;
+			return (E) toReturn;
+		}
+		Object toReturn = get(i);
+		ListNode newNode = new ListNode((E) obj);
+		((ListNode<E>) get(i - 1)).setNext(newNode);
+		return (E) toReturn;
 	}
 
 	// Inserts obj to become the i-th element. Increments the size
 	// of the list by one.
 	public void add(int i, Object obj) {
+		nodeCount = nodeCount++;
 	}
 
 	// Removes the i-th element and returns its value.
 	// Decrements the size of the list by one.
 	public E remove(int i) {
-		
+		Object toReturn = get(i);
+		((ListNode<E>) get(i - 1)).setNext(((ListNode<E>) get(i)).getNext());
+		nodeCount -=1;
+		return (E) toReturn;
 	}
 
 	// Returns a string representation of this list exactly like that for MyArrayList.
@@ -137,7 +158,7 @@ public class SinglyLinkedList<E> {
 			thisNode = thisNode.getNext();
 			if (thisNode != null) {
 				theToString = theToString + ", ";
-			}
+			} 
 		}
 		return theToString;
 	}
