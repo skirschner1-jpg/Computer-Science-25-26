@@ -1,3 +1,4 @@
+import java.rmi.server.ServerNotActiveException;
 
 public class DoublyLinkedList {
 	// Implements a circular doubly-linked list.
@@ -31,34 +32,77 @@ public class DoublyLinkedList {
 
 	// Returns true if this list is empty; otherwise returns false.
 	public boolean isEmpty() {
+		return nodeCount == 0;
 	}
 
 	// Returns the number of elements in this list.
 	public int size() {
+		if (isEmpty()) {
+			return 0;
+		}
+		ListNode2 thisNode = SENTINEL;
+		int count = 0;
+		while (thisNode.getNext() != SENTINEL) {
+			count++;
+			thisNode = thisNode.getNext();
+		}
+		return count;
 	}
 
 	// Returns true if this list contains an element equal to obj;
 	// otherwise returns false.
 	public boolean contains(Nucleotide obj) {
+		ListNode2 thisNode = SENTINEL;
+		while (thisNode.getNext() != SENTINEL) {
+			if (thisNode.getValue().equals(obj)) {
+				return true;
+			}
+			thisNode = thisNode.getNext();
+		}
+		return false;
 	}
 
 	// Returns the index of the first element in equal to obj;
 	// if not found, returns -1.
 	public int indexOf(Nucleotide obj) {
+		ListNode2 thisNode = SENTINEL;
+		int index = 0;
+		while (thisNode.getNext() != SENTINEL) {
+			if (thisNode.getValue().equals(obj)) {
+				return index;
+			}
+			thisNode = thisNode.getNext();
+		}
+		return -1;
 	}
 
 	// Adds obj to this collection.  Returns true if successful;
 	// otherwise returns false.
 	public boolean add(Nucleotide obj) {
+		ListNode2 addition = new ListNode2(obj);
+		SENTINEL.setPrevious(addition);
+		//FILL IN
+		return true;
 	}
 
 	// Removes the first element that is equal to obj, if any.
 	// Returns true if successful; otherwise returns false.
 	public boolean remove(Nucleotide obj) {
+		if (!contains(obj)) {
+			return false;
+		}
 	}
 
 	// Returns the i-th element.               
 	public Nucleotide get(int i) {
+		if(i <0 || i>= size()){
+			throw new IndexOutOfBoundsException();
+		}
+		ListNode2 thisNode = SENTINEL;
+		for (int j = 0; j < i; j++) {
+			thisNode = thisNode.getNext();
+		}
+		return (Nucleotide) thisNode.getValue();
 	}
 
 	// Replaces the i-th element with obj and returns the old value.
@@ -106,13 +150,21 @@ public class DoublyLinkedList {
 	// Delete the last three nodes in the list
 	// If there are not enough nodes, return false
 	public boolean deleteLastThree() {
-		
+		if (size() < 3) {
+			return false;
+		}
+		for (int i = 0; i < 3; i++) {
+			remove(SENTINEL.getPrevious().getValue());
+		}
+		return true;
 	}
 
 	// Like question 11 on the SinglyLinkedList test:
 	// Replaces every node containing "A" with three nodes containing "T" "A" "C"
 	public void replaceEveryAWithTAC() {
-		
+		for (int i = 0; i < size(); i++) {
+			
+		}
 	}
 
 }
