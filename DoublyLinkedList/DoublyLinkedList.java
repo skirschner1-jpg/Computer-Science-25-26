@@ -14,7 +14,14 @@ public class DoublyLinkedList {
 	// Constructor: creates a list that contains
 	// all elements from the array values, in the same order
 	public DoublyLinkedList(Nucleotide[] values) {
-
+		if (values.length > 0) {
+			ListNode2 head = new ListNode2(values[0]);
+			SENTINEL.setNext(head);
+			ListNode2 thisNode = new ListNode2(head);
+			for (int i = 0; i < values.length; i++){
+				
+			}
+		}
 	}
 	
 	public ListNode2<Nucleotide> getSentinel() {
@@ -88,9 +95,30 @@ public class DoublyLinkedList {
 	// Removes the first element that is equal to obj, if any.
 	// Returns true if successful; otherwise returns false.
 	public boolean remove(Nucleotide obj) {
+		if (obj == null) {
+			throw new NullPointerException();
+		}
 		if (!contains(obj)) {
 			return false;
 		}
+		if (getHead().getValue() == obj || getHead().getValue().equals(obj)) {
+			SENTINEL.setNext(SENTINEL.getNext().getNext());
+			nodeCount -= 1;
+			return true;
+		}
+		ListNode2<Nucleotide> thisNode = getHead();
+		// ListNode<E> prevNode = getHead();
+		while (thisNode != null) {
+			if (thisNode.getNext().getValue().equals(obj)) {
+				// System.out.println("here (if statement)");
+				thisNode.setNext(thisNode.getNext().getNext());
+				nodeCount -=1;
+				return true;
+			}
+			thisNode = thisNode.getNext();
+			// prevNode = prevNode.getNext();
+		}
+		return false;
 	}
 
 	// Returns the i-th element.               
@@ -107,6 +135,9 @@ public class DoublyLinkedList {
 
 	// Replaces the i-th element with obj and returns the old value.
 	public Nucleotide set(int i, Nucleotide obj) {
+		Nucleotide preserve = get(i);
+
+		return preserve;
 	}
 
 	// Inserts obj to become the i-th element. Increments the size
@@ -117,6 +148,10 @@ public class DoublyLinkedList {
 	// Removes the i-th element and returns its value.
 	// Decrements the size of the list by one.
 	public Nucleotide remove(int i) {
+		Nucleotide preserve = get(i);
+		getNode(i - 1).setNext(getNode(i).getNext());
+		nodeCount--;
+		return preserve;
 	}
 
 	// Returns a string representation of this list exactly like that for MyArrayList.
@@ -163,8 +198,19 @@ public class DoublyLinkedList {
 	// Replaces every node containing "A" with three nodes containing "T" "A" "C"
 	public void replaceEveryAWithTAC() {
 		for (int i = 0; i < size(); i++) {
-			
+
 		}
+	}
+	
+	public ListNode2 getNode(int i) {
+		if(i <0 || i>= size()){
+			throw new IndexOutOfBoundsException();
+		}
+		ListNode2 thisNode = SENTINEL;
+		for (int j = 0; j < i; j++) {
+			thisNode = thisNode.getNext();
+		}
+		return thisNode;
 	}
 
 }
