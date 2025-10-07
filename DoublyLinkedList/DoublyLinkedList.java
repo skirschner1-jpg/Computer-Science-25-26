@@ -87,7 +87,14 @@ public class DoublyLinkedList {
 	// otherwise returns false.
 	public boolean add(Nucleotide obj) {
 		ListNode2 addition = new ListNode2(obj);
+		if (size() == 0) {
+			SENTINEL.setNext(addition);
+		}
+		nodeCount++;
 		SENTINEL.setPrevious(addition);
+		if (size() != 1) {
+			getNode(size() - 1).setNext(addition);	
+		}
 		//FILL IN
 		return true;
 	}
@@ -156,7 +163,16 @@ public class DoublyLinkedList {
 
 	// Returns a string representation of this list exactly like that for MyArrayList.
 	public String toString() {
-
+		ListNode2 thisNode = getHead();
+		String theToString = "[";
+		while (thisNode != null) {
+			theToString = theToString + thisNode.getValue();
+			thisNode = thisNode.getNext();
+			if (thisNode != null) {
+				theToString = theToString + ", ";
+			}
+		}
+		return theToString + "]";
 
 	}
 	
@@ -171,14 +187,31 @@ public class DoublyLinkedList {
 	// (on the test these nodes were assumed to contain CCCCCCCCGGGGGGGG, but here
 	// you do not need to assume or check for that)
 	public void removeCCCCCCCCGGGGGGGG(ListNode2<Nucleotide> nodeBefore) {
-		
+		// for(){
+
+		// }
 	}
 	
 	// Like question 9 on the SinglyLinkedList test:
 	// You are to find and delete the first instance of seg in the list.
 	// If seg is not in the list, return false, otherwise return true.
 	public boolean deleteSegment(DoublyLinkedList seg) {
-		
+		if (size() < seg.size()) {
+			return false;
+		}
+		for (int i = 0; i < size() - seg.size() - 1; i++) {
+			if (get(i) == seg.get(0)) {
+				for (int j = 0; j < seg.size(); j++) {
+					if (get(i + j) != seg.get(j)) {
+						return false;
+					}
+				}
+				for (int k = 0; k < seg.size(); k++) {
+					remove(i + k);
+				}
+			}
+		}
+		return false;
 	}
 	
 	// Like question 10 on the SinglyLinkedList test:
@@ -198,12 +231,14 @@ public class DoublyLinkedList {
 	// Replaces every node containing "A" with three nodes containing "T" "A" "C"
 	public void replaceEveryAWithTAC() {
 		for (int i = 0; i < size(); i++) {
-
+			if (get(i).equals("A")) {
+				
+			}
 		}
 	}
 	
 	public ListNode2 getNode(int i) {
-		if(i <0 || i>= size()){
+		if (i < 0 || i >= size() && size() != 0) {
 			throw new IndexOutOfBoundsException();
 		}
 		ListNode2 thisNode = SENTINEL;
@@ -212,5 +247,17 @@ public class DoublyLinkedList {
 		}
 		return thisNode;
 	}
+	
+		// // HELPER METHODS
+		// public ListNode2 getNode(int i) {
+		// 	ListNode2 thisNode = getHead();
+		// 	for (int j = 0; j < i; j++) {
+		// 		// if (thisNode == null) {
+		// 		// 	throw new NullPointerException();
+		// 		// }
+		// 		thisNode = thisNode.getNext();
+		// 	}
+		// 	return thisNode;
+		// }
 
 }
