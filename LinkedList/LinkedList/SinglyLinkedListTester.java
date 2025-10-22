@@ -16,14 +16,17 @@ public class SinglyLinkedListTester {
         // System.out.println(sample.getTail());
         sample.add("dog");
         System.out.println(sample.toString());
+        System.out.println(sample.size());
         System.out.println("Tail: " + sample.getTail().getValue());
         System.out.println("Head: " + sample.getHead().getValue());
         sample.add("lizard");
         System.out.println(sample.toString());
+        System.out.println(sample.size());
         System.out.println("Tail: " + sample.getTail().getValue());
         System.out.println("Head: " + sample.getHead().getValue());
         sample.add("hamster");
         System.out.println(sample.toString());
+        System.out.println(sample.size());
         System.out.println("Tail: " + sample.getTail().getValue());
         System.out.println("Head: " + sample.getHead().getValue());
         // System.out.println(sample.size());
@@ -39,6 +42,7 @@ public class SinglyLinkedListTester {
         // System.out.println(sample.toString());
         sample.add(4, "gerbil");
         System.out.println(sample.toString());
+        System.out.println(sample.size());
         System.out.println("Tail: " + sample.getTail().getValue());
         System.out.println("Head: " + sample.getHead().getValue());
         // // sample.remove("gerbil");
@@ -63,10 +67,39 @@ public class SinglyLinkedListTester {
         // sample.add(3, "cat");
         // System.out.println(sample.toString());
         // System.out.println("Tail: " + sample.getTail().getValue());
-        // sample.set(3, "mouse");
-        // System.out.println(sample.toString());
-        // System.out.println("Tail: "+ sample.getTail().getValue()); //TAIL IS HAMSTER??
-        // // System.out.println(sample.toString());
+        sample.set(3, "mouse");
+        System.out.println(sample.toString());
+        System.out.println(sample.size());
+        System.out.println("Tail: " + sample.getTail().getValue()); //TAIL IS HAMSTER?? not anymore :)
+        sample.set(4, "ardvark");
+        System.out.println(sample.toString());
+        System.out.println(sample.size());
+        System.out.println("Tail: " + sample.getTail().getValue());
+        sample.set(0, "wombat");
+        System.out.println(sample.toString());
+        System.out.println(sample.size());
+        System.out.println("Head: " + sample.getHead().getValue());
+        sample.remove("ardvark");
+        System.out.println(sample.toString());
+        System.out.println(sample.size());
+        System.out.println("Head: " + sample.getHead().getValue());
+        System.out.println("Tail: " + sample.getTail().getValue());
+        sample.remove(3);
+        System.out.println(sample.toString());
+        System.out.println(sample.size());
+        System.out.println("Head: " + sample.getHead().getValue());
+        System.out.println("Tail: " + sample.getTail().getValue());
+        sample.set(0, "krill");
+        System.out.println(sample.toString());
+        System.out.println(sample.size());
+        System.out.println("Head: " + sample.getHead().getValue());
+        System.out.println("Tail: " + sample.getTail().getValue());
+        sample.set(2, "adorabilis");
+        System.out.println(sample.toString());
+        System.out.println(sample.size());
+        System.out.println("Head: " + sample.getHead().getValue());
+        System.out.println("Tail: " + sample.getTail().getValue());
+        System.out.println("Testing indexOf: " + sample.indexOf("krill"));
 
 
         // GENERALLY NOT RESETTING TAIL

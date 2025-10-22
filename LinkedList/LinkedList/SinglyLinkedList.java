@@ -82,10 +82,13 @@ public class SinglyLinkedList<E> {
 		// }
 		ListNode<E> thisNode = getHead();
 		int index = 0;
+		if (head.getValue().equals(obj) || head.getValue() == obj) {
+			return 0;
+		}
 		while (thisNode != null) {
 			index++;
 			if (thisNode.getValue() == obj || thisNode.getValue().equals(obj)) {
-				return index;
+				return index -1;  // DIDN'T CHANGE
 			}
 			thisNode = thisNode.getNext();
 		}
@@ -128,10 +131,15 @@ public class SinglyLinkedList<E> {
 			return true;
 		}
 		ListNode<E> thisNode = getHead();
+		int counter = 0;
 		// ListNode<E> prevNode = getHead();
 		while (thisNode != null) {
+			counter++;
 			if (thisNode.getNext().getValue() == obj || thisNode.getNext().getValue().equals(obj)) {
 				// System.out.println("here (if statement)");
+				if (counter == size() - 1) {
+					tail = thisNode;
+				} //yayyyyayayayayay :)) je suis ecstatique
 				thisNode.setNext(thisNode.getNext().getNext());
 				nodeCount -= 1;
 				if (isEmpty()) {
@@ -217,6 +225,7 @@ public class SinglyLinkedList<E> {
 			return (E) toReturn;
 		}
 		if (i == size() - 1) {
+			// System.out.println("here");
 			ListNode newNode = new ListNode((E) obj);
 			tail = newNode;
 		}
@@ -244,7 +253,8 @@ public class SinglyLinkedList<E> {
 			head = newNode;
 		}
 			if (i == size()) { // FIXED TAIL AND DIDN'T CHANGEG TESTER
-			add((E) obj);
+				add((E) obj);
+				nodeCount--; // didn't fix tester!!
 			// tail = newNode;
 		}
     	else {
