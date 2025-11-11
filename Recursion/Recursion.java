@@ -9,6 +9,7 @@ public class Recursion {
 		System.out.println(head.getValue()); // print maybe no new line
 	}
 	// BASE CASE: length of 1
+	// DONE
 
 	// For the given 2D array of Strings, replaces the String at index[r][c]
 	// with "infected" unless the String is "vaccinated";
@@ -64,6 +65,7 @@ public class Recursion {
 	// The other subsets of 1,2,3,4 that DO contain consecutive integers are
 	// {1,2}, {2,3}, {3,4}, {1,2,3}, {1,2,4}, {1,3,4}, {1,2,3,4}
 	// Precondition: n > 0
+
 	public static long countNonConsecutiveSubsets(int n) {
 		// start w/ n options of numbers to put
 		// next we have n-2 options to put b/c we can't put the next consecutive # or the same #
@@ -74,6 +76,7 @@ public class Recursion {
 		}
 		return 1;
 	}
+	// DONE
 
 	// A kid at the bottom of the stairs can jump up 1, 2, or 3 stairs at a time.
 	// How many different ways can they jump up n stairs?
@@ -86,9 +89,10 @@ public class Recursion {
 		if (n == 2) {
 			return 3;
 		} else {
-			return countWaysToJumpUpStairs(n - 1) + countWaysToJumpUpStairs(n-2);
+			return countWaysToJumpUpStairs(n - 1) + countWaysToJumpUpStairs(n - 2);
 		}
 	}
+	// DONE
 
 	// Everything above this line does NOT require a recursive helper method
 	// ----------------------------------
@@ -103,25 +107,38 @@ public class Recursion {
 	// "bc", "abc"
 	// Order is your choice
 	public static void printSubsets(String str) {
-		if (str.length() != 0) {
-			System.out.println(str);
-			// print subsets for str w/o the first value & w/o the last value
-			// if (str.length() > 2) {
-			// 	printSubsets(str.substring(0, str.length() - 2));
-			// 	printSubsets(str.substring(1, str.length() - 1));
-			// }
-			// if (str.length() > 1) {
-			// 	printSubsets(str.substring(0, str.length() - 1));
-			// 	// printSubsets(str.substring(1, str.length()));	
-			// }
-			// if (str.length() > 1) {
-			// 	for (int i = 0; i < str.length(); i++) {
-			// 		printSubsets(str.substring(0, str.length() - i));
-			// 	}
+		System.out.println(str);
+		if (str.length() > 1) {
+			if (str.length() >= 2) {
+				printSubsets(str.substring(0, str.length() - 1));
+				// System.out.println("here1");
+				printSubsets(str.substring(1));
+				// System.out.println("here2");
+				// printSubsets(str.substring(0, str.length() - 1));
+				// printSubsets(str.substring(1, str.length() - 2));
+			}
+			// else {
+			// 	printSubsets(str.substring(0));
+			// 	// System.out.println("here3");
 			// }
 		}
-		// System.out.println("");
+		// if (str.length() != 0) {
+		// 	System.out.println(str);
+		// 	// print subsets for str w/o the first value & w/o the last value
+		// 	// if (str.length() > 2) {
+		// 	// 	printSubsets(str.substring(0, str.length() - 2));
+		// 	// 	printSubsets(str.substring(1, str.length() - 1));
+		// 	// }
+
+		// 	// if (str.length() > 1) {
+		// 	// 	for (int i = 0; i < str.length(); i++) {
+		// 	// 		printSubsets(str.substring(0, str.length() - i));
+		// 	// 	}
+		// 	// }
+		// }
+		// // System.out.println("");
 	}
+	// ISSUE: STUFF REPEATS AS WE WORK INWARDS
 
 	// List contains a single String to start.
 	// Prints all the permutations of str on separate lines
@@ -178,7 +195,7 @@ public class Recursion {
 	// time 9
 	// for a total of 20 points, so it would return 20.
 	public static int scavHunt(int[] times, int[] points) {
-
+		return (maxReward(times, points));
 	}
 
 	// HELPER METHODS
@@ -203,11 +220,50 @@ public class Recursion {
 	
 	public static void scoot(int startingDisks, int onTower) {
 		if (startingDisks == 1) {
-			System.out.println(onTower+"->2");
-		}
-		else {
+			System.out.println(onTower + "->2");
+		} else {
 			scoot(startingDisks - 1, onTower);
 		}
+	}
+	
+	public static int maxReward(int[] times, int[] points) {
+		// int toReturn = 0;
+		if (times.length == 0) {
+			return 0;
+		}
+		int i = 1;
+		int index2 = times.length - 1;
+		while (i < times.length) {
+			if (times[i] > times[0] + 5) {
+				index2 = i;
+				i = times.length;
+			}
+			i++;
+		}
+		int option1 = maxReward(subArray(points, index2, points.length - 1), subArray(times, index2, times.length - 1))
+				+ 20;
+		System.out.println("option1: " + option1);
+		int option2 = maxReward(subArray(points, 1, points.length - 1), subArray(times, 1, points.length - 1));
+		System.out.println("option2: " + option2);
+		if (option1 > option2) {
+			return option1;
+		} else {
+			return option2;
+		}
+		// return toReturn;
+	}
+
+
+	// HELPER HELPER METHODS
+	public static int[] subArray(int[] list, int start, int end) {
+		if (end <= start) {
+			return new int[0];
+		}
+		int[] toReturn = new int[end - start];
+		for (int i = 0; i < toReturn.length; i++) {
+			toReturn[i] = list[i + start];
+		}
+		return toReturn;
 	}
 
 }
