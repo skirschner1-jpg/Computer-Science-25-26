@@ -49,11 +49,18 @@ public class Navigator {
      */
     private void cd(String[] args) {
         // TODO: implement directory navigation
-        if (args[1].equals(".")) {
-            return;
+        if (args[0].equals(".")) {
+            
         }
-        if (args[1].equals("..")) {
+        if (args[0].equals("..")) {
             currentDirectory = currentDirectory.getParent();
+        }
+        if (args[0].equals("/")) {
+            currentDirectory = fileSystem.getRoot();
+            for (int i = 1; i < args.length; i++) {
+                String[] toFind = {args[0]};
+                find(toFind);
+            }
         }
     }
     // in progress
@@ -115,6 +122,7 @@ public class Navigator {
         // TODO: use currentDirectory.toString() or similar path builder
         currentDirectory.toString();
     }
+    // DONE
 
     /**
      * Displays the contents of the current directory as a tree, optionally
@@ -130,6 +138,9 @@ public class Navigator {
      */
     private void count(String[] args) {
         // TODO: call a counting method on currentDirectory
+        for (int i = 0; i < currentDirectory.getChildren().size(); i++) {
+            
+        }
     }
 
     /**

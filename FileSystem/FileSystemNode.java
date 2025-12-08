@@ -75,8 +75,10 @@ public abstract class FileSystemNode {
     public String toString() {
         // TODO: build a string like "/root/folder/subfolder/file"
         if (getParent() != null) {
-            return getParent().toString(); // obvs doesn't work
+            return this.getName() + getParent().toString(); // obvs doesn't work
         }
-        return "/";
+        return this.getName();
+        // return "/";
     }
+    // DONE
 }
