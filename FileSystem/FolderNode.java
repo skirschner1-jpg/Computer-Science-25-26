@@ -132,5 +132,17 @@ public class FolderNode extends FileSystemNode {
         }
         return children.size();
     }
+
+    public String folderTree() {
+        // System.out.println("here");
+        String toReturn = new String();
+        for (int i = 0; i < getChildren().size(); i++) {
+            toReturn += getChildren().get(i) + "\n";
+            if (getChildren().get(i).isFolder()) {
+                getChildren().get(i).toString();
+            }
+        }
+        return toReturn;
+    }
     // DONE
 }

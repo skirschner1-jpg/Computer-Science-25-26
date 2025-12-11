@@ -74,11 +74,15 @@ public abstract class FileSystemNode {
     @Override
     public String toString() {
         // TODO: build a string like "/root/folder/subfolder/file"
-        if (getParent() != null) {
-            return this.getName() + getParent().toString(); // obvs doesn't work
+        if (getParent() != null && getParent().getName() != "/") {
+            return getParent().toString() + "/" + this.getName();
+        }
+        else if (getParent() != null) {
+            return getParent().toString() + this.getName();
         }
         return this.getName();
         // return "/";
     }
     // DONE
+    // is it bad to assume that there isn't some other folder named "/"??
 }

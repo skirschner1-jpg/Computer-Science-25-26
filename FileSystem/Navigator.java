@@ -69,13 +69,16 @@ public class Navigator {
      * Lists all items contained directly in the current directory.
      * Output formatting can mirror typical file system listings.
      */
-    private void ls(String[] args) {
+    public void ls(String[] args) {
         // TODO: print names of all child nodes of currentDirectory
-        for (int i = 0; i < currentDirectory.getSize(); i++) {
-            System.out.println(currentDirectory.getChildren().get(i));
+        for (int i = 0; i < currentDirectory.getChildren().size(); i++) {
+            // System.out.println("here");
+            System.out.println(currentDirectory.getChildren().get(i).getName());
         }
     }
-    // DONE
+    // not done
+    // doesn't work on a folder that has folders within it?????
+    // again changed to public???
 
     /**
      * Creates a new directory inside the current directory using the provided name.
@@ -91,10 +94,11 @@ public class Navigator {
      */
     private void touch(String[] args) {
         // TODO: read file name and size from args and delegate to currentDirectory.addFile(...)
-        // currentDirectory.addFile(args[1], args[2]);
+        int size = Integer.parseInt(args[2]);
+        currentDirectory.addFile(args[1], size);
     }
-    // in progress
-    // also am i even right that it's index 1 & index 2??
+    // DONE
+    // am i even right that it's index 1 & index 2??
 
     /**
      * Searches the current directory and its descendants for nodes with a given name
@@ -130,17 +134,36 @@ public class Navigator {
      */
     private void tree(String[] args) {
         // TODO: implement tree-style printing with indentation and branch characters
+        fileSystem.toString();
+
     }
 
     /**
      * Prints how many nodes (files and folders) exist in the current directory
      * and all of its subdirectories.
      */
-    private void count(String[] args) {
+    public void count(String[] args) {
         // TODO: call a counting method on currentDirectory
-        for (int i = 0; i < currentDirectory.getChildren().size(); i++) {
-            
+        System.out.println(countHelper());
+    }
+    // confused about why there are arguments??? do i need to account for if they're weird? do i need to use them?
+    // changed to public (is that ok?)
+    // DONE
+
+    // HELPER METHOD
+    private int countHelper() {
+        // int count = 0;
+        int curr = currentDirectory.getChildren().size();
+        if (currentDirectory.isFolder()) {
+            for (int i = 0; i < currentDirectory.getChildren().size(); i++) {
+                if (currentDirectory.getChildren().get(i).isFolder()) {
+                    // FolderNode prevDirectory = currentDirectory;
+                    currentDirectory = (FolderNode) currentDirectory.getChildren().get(i);
+                    return curr + countHelper();
+                }
+            }   
         }
+        return curr;
     }
 
     /**
@@ -148,7 +171,20 @@ public class Navigator {
      */
     private void size(String[] args) {
         // TODO: call a size-calculation method on currentDirectory
+        int count = 0;
+        if (currentDirectory.isFolder()) {
+            for (int i = 0; i < currentDirectory.getChildren().size(); i++) {
+                if (!currentDirectory.getChildren().get(i).isFolder()) {
+                    // FolderNode prevDirectory = currentDirectory;
+                    count += currentDirectory.getChildren().get(i).getSize();
+                    currentDirectory = (FolderNode) currentDirectory.getChildren().get(i);
+                    // return curr + countHelper();
+                }
+            }
+        }
+        // return curr;
     }
+    // in progress
 
     /**
      * Prints the depth of the current directory, defined as the number of edges

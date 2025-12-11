@@ -13,6 +13,9 @@ public class FileSystemTree {
     public FileSystemTree() {
         this.root = new FolderNode("/", null); // or equivalent
     }
+    public FileSystemTree(FolderNode folder) {
+        this.root = folder; // or equivalent
+    }
 
     /**
      * Provides the root of the directory tree so callers can navigate from the top.
@@ -24,4 +27,17 @@ public class FileSystemTree {
         return null;
     }
     // DONE
+
+    public String toString() {
+        String toReturn = new String();
+        for (int i = 0; i < root.getChildren().size(); i++) {
+            toReturn += root.getChildren().get(i) + "\n";
+            if (root.getChildren().get(i).isFolder()) {
+                // System.out.println("here");
+                // System.out.println(root.getChildren().get(i));
+                root.getChildren().get(i).toString();
+            }
+        }
+        return toReturn;
+    }
 }

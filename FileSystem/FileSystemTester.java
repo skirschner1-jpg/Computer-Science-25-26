@@ -42,5 +42,22 @@ public class FileSystemTester {
         int heightRoot = root.getHeight();
         int sizeRoot = root.getSize();
         int totalNodesRoot = root.getTotalNodeCount();
+        // System.out.println(root);
+        // System.out.println(root.getChildren().get(0));
+
+        FolderNode docs = (FolderNode) root.getChildren().get(0);
+        docs.addFile("compSciAssignment", 90); // adding this does add one to count which is good but doesn't print in tree :(
+        docs.addFile("chemLab", 90);
+        // docs.addFolder("englishEssays");
+        // FolderNode englishEssays = (FolderNode) root.getChildren().get(0);
+        // englishEssays.addFile("bookOfJob", 80);
+        System.out.println(tree);
+        // System.out.println(docs);
+        Navigator nav = new Navigator(tree);
+        String[] argus = new String[0];
+        nav.count(argus);
+        System.out.println();
+        System.out.println(docs.getChildren().size()); // claims that docs has four children when we add english essays :(
+        nav.ls(argus);
     }
 }
