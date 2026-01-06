@@ -46,18 +46,69 @@ public class FileSystemTester {
         // System.out.println(root.getChildren().get(0));
 
         FolderNode docs = (FolderNode) root.getChildren().get(0);
+        System.out.println("docs children.size(): " + docs.getChildren().size()); // claims that docs has four children when we add english essays :(, it's including the essay within the folder...
         docs.addFile("compSciAssignment", 90); // adding this does add one to count which is good but doesn't print in tree :(
         docs.addFile("chemLab", 90);
-        // docs.addFolder("englishEssays");
-        // FolderNode englishEssays = (FolderNode) root.getChildren().get(0);
-        // englishEssays.addFile("bookOfJob", 80);
+        docs.addFolder("englishEssays");
+        FolderNode englishEssays = (FolderNode) ((FolderNode) root.getChildren().get(0)).getChildren().get(2);
+        englishEssays.addFile("bookOfJob", 80);
         System.out.println(tree);
         // System.out.println(docs);
         Navigator nav = new Navigator(tree);
         String[] argus = new String[0];
+        System.out.print("nav.count: ");
         nav.count(argus);
         System.out.println();
-        System.out.println(docs.getChildren().size()); // claims that docs has four children when we add english essays :(
+        System.out.println("docs children.size(): " + docs.getChildren().size()); // claims that docs has four children when we add english essays :(, it's including the essay within the folder...
+        System.out.println("root children.size(): " + root.getChildren().size()); // works for root though???
         nav.ls(argus);
+
+        String[] cdString1 = { "/", "src" };
+        System.out.println();
+        System.out.println(nav.getCurrentDirectory());
+        nav.cd(cdString1);
+        System.out.println();
+        System.out.println(nav.getCurrentDirectory());
+
+        String[] cdString2 = { "/", "docs", "/", "englishEssays" };
+        String[] empty = {};
+        System.out.println();
+        System.out.print("with print: ");
+        System.out.println(nav.getCurrentDirectory());
+        System.out.print("with pwd: ");
+        nav.pwd(empty);
+        nav.cd(cdString2);
+        System.out.println();
+        System.out.println(nav.getCurrentDirectory());
+
+        String[] cdString3 = { "..", "/" };
+        nav.cd(cdString3);
+        System.out.println();
+        nav.pwd(empty);
+        // works??? even w/ dash after?????
+        // codegrade >:(
+
+        String[] cdString4 = { ".", "/" };
+        nav.cd(cdString4);
+        System.out.println();
+        nav.pwd(empty);
+
+        String[] cdString5 = { "/"};
+        nav.cd(cdString5);
+        System.out.println();
+        nav.pwd(empty);
+
+        String[] cdString6 = { "docs"};
+        nav.cd(cdString6);
+        System.out.println();
+        nav.pwd(empty);
+
+        nav.tree(empty);
+
+        System.out.println(root.getTotalNodeCount());
+
+        nav.size(empty);
+        System.out.println(root.getHeight());
     }
+
 }

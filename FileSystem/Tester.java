@@ -9,6 +9,7 @@ public class Tester {
     }
 
     private void cd(String[] args) {
+
         cdHelper(currentDirectory, args);
     }
     
@@ -47,19 +48,6 @@ public class Tester {
         }
     }
     
-    private void find(String[] args) {
-        // TODO: use recursive search starting at currentDirectory
-        for (int i = 0; i < currentDirectory.getChildren().size(); i++) {
-            if (currentDirectory.getChildren().get(i).getName().equals(args[1])) {
-
-            }
-            if (currentDirectory.getChildren().get(i).isFolder()) {
-                // FolderNode thisFolder = (FolderNode) currentDirectory.getChildren().get(i);
-                // Navigator thisNav = new Navigator(thisFolder);
-                // thisNav.find(args);
-            }
-        }
-    }
 
     private boolean findForCdBool(String name) {
         for (int i = 0; i < currentDirectory.getChildren().size(); i++) {
@@ -78,6 +66,20 @@ public class Tester {
             }
         }
         return toReturn;
+    }
+
+    private void find(String[] args) {
+        // TODO: use recursive search starting at currentDirectory
+        for (int i = 0; i < currentDirectory.getChildren().size(); i++) {
+            if (currentDirectory.getChildren().get(i).getName().equals(args[1])) {
+
+            }
+            if (currentDirectory.getChildren().get(i).isFolder()) {
+                // FolderNode thisFolder = (FolderNode) currentDirectory.getChildren().get(i);
+                // Navigator thisNav = new Navigator(thisFolder);
+                // thisNav.find(args);
+            }
+        }
     }
     
     public static void main(String[] args) {

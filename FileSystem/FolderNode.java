@@ -99,15 +99,41 @@ public class FolderNode extends FileSystemNode {
     @Override
     public int getHeight() {
         // TODO: compute the maximum height among children; empty folders have value 0
-        int max = 0;
-        for (int i = 0; i < children.size(); i++) {
-            if (children.get(i).getHeight() > max) {
-                max = children.get(i).getHeight();
+        // int thisFolder = children.size();
+        // int childSize = 0;
+        // for (int i = 0; i < children.size(); i++) {
+        //     if (children.get(i).getHeight() > childSize) {
+        //         childSize = 1 + children.get(i).getHeight(); // needed to add one
+        //     }
+        // }
+        // return childSize;
+        return getHeightHelper(this) -1; // -1 for root
+    }
+
+    // private int heightHelper(FileSystemNode curr, int childSize) {
+    //     for (int i = 0; i < children.size(); i++) {
+    //         if (heightHelper(children.get(i), childSize+1) > childSize) {
+    //             childSize = heightHelper(children.get(i), childSize+1); // needed to add one
+    //         }
+    //     }
+    //     return childSize;
+    // }
+    // DONE
+
+    public int getHeightHelper(FileSystemNode node) {
+        if (!node.isFolder() || ((FolderNode)node).getChildren().size() == 0) {
+            return 1;
+        }
+        int maxHeight = 0;
+        for (int i = 0; i < ((FolderNode) node).getChildren().size(); i++ ){
+        // for (FileSystemNode child : ((FolderNode)node).getChildren()) {
+            int childHeight = getHeightHelper(((FolderNode) node).getChildren().get(i));
+            if (childHeight> maxHeight) {
+                maxHeight = childHeight;
             }
         }
-        return max;
+        return maxHeight+1;
     }
-    // DONE
 
     @Override
     public int getSize() {
@@ -125,12 +151,17 @@ public class FolderNode extends FileSystemNode {
     @Override
     public int getTotalNodeCount() {
         // TODO: count this directory plus all descendant files and folders
+        return getTotalNodeCountHelper() + 1; // couldn't think of better way for make it to count for bonus from og folder????
+    }
+
+    public int getTotalNodeCountHelper() {
+        int descCount = 0;
         for (int i = 0; i < children.size(); i++) {
             if (children.get(i).isFolder()) {
-                return children.size() + children.get(i).getTotalNodeCount();
+                descCount += ((FolderNode)children.get(i)).getTotalNodeCountHelper();
             }
         }
-        return children.size();
+        return children.size() + descCount;
     }
 
     public String folderTree() {

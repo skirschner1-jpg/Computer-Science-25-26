@@ -20,6 +20,10 @@ public class Navigator {
         this.currentDirectory = fst.getRoot();
     }
 
+    public FolderNode getCurrentDirectory() {
+        return currentDirectory;
+    }
+
     /**
      * Starts a command loop that repeatedly reads a line of input,
      * interprets it as a command with arguments, and executes it until
@@ -47,23 +51,100 @@ public class Navigator {
      *   - Paths starting with "/" are interpreted from the root directory.
      *   - Other paths are interpreted relative to the current directory.
      */
-    private void cd(String[] args) {
-        // TODO: implement directory navigation
+    public void cd(String[] args) {
+        if (args.length == 0 || args[0] == null) {
+            return;
+        }
+        String[] newArgs = new String[args.length - 1];
+        for (int i = 0; i < args.length - 1; i++) {
+            newArgs[i] = args[i + 1];
+        }
         if (args[0].equals(".")) {
-            
-        }
-        if (args[0].equals("..")) {
-            currentDirectory = currentDirectory.getParent();
-        }
-        if (args[0].equals("/")) {
-            currentDirectory = fileSystem.getRoot();
-            for (int i = 1; i < args.length; i++) {
-                String[] toFind = {args[0]};
-                find(toFind);
+            cdHelper(currentDirectory, newArgs);
+        } else if (args[0].equals("..")) {
+            if (!currentDirectory.getName().equals("/")) {
+                currentDirectory = currentDirectory.getParent();
             }
+            cdHelper(currentDirectory, newArgs);
+        } else if (args[0].equals("/")) {
+            currentDirectory = fileSystem.getRoot();
+            cdHelper(currentDirectory, newArgs);
+        }else{
+            cdHelper(currentDirectory, args);
+        } // LEFT THIS OUT!!!!! :(
+    }
+    // also changed to public??
+    // CD HELPERS
+    public void cdHelper(FileSystemNode currentdir, String args[]) {
+        // System.out.println("here1");
+        // System.out.println("args[0]: " + args[0]);
+        if (args.length == 0 || args[0] == null) {
+            // System.out.println("here2");
+            return;
+        }
+        String[] newArgs = new String[args.length - 1];
+        // System.out.println("args[0]: " + args[0]);
+        for (int i = 0; i < args.length - 1; i++) {
+            newArgs[i] = args[i + 1];
+        }
+        if (args.length == 0 || !currentdir.isFolder()) {
+            return;
+        }
+        if (args[0].equals(".")) {
+            // currentDirectory = currentDirectory; //comment out
+        } else if (args[0].equals("..")) {
+            currentDirectory = currentDirectory.getParent();
+            cdHelper(currentDirectory, newArgs);
+        } else if (args[0].equals("/")) {
+            // currentDirectory = fileSystem.getRoot();
+            cdHelper(currentDirectory, newArgs);
+        }
+        for (int i = 0; i < args.length; i++) {
+            String toFind = args[0];
+            if (findForCdBool(toFind)) {
+                // System.out.println("here");
+                if (currentdir.isFolder()) {
+                    currentDirectory = (FolderNode) findForCdReturn(toFind);
+                } else {
+                    System.out.println("no such directory" + currentDirectory); // should make sure we're not allowed to go into a file
+                    return;
+                }
+            } 
+            // else {
+            //     // System.out.println("here");
+            //     System.out.println("no such file or directory: " + args[0]);
+            //     return;
+            // }
+        }
+        if (currentDirectory.isFolder()) {
+            // FileSystemTree currentFile = new FileSystemTree(currentDirectory);
+            cdHelper(currentDirectory, newArgs);
         }
     }
+    
+
+    private boolean findForCdBool(String name) {
+        for (int i = 0; i < currentDirectory.getChildren().size(); i++) {
+            if (currentDirectory.getChildren().get(i).getName().equals(name)) {
+                // System.out.println("found");
+                return true;
+            }
+        }
+        return false;   
+    }
+
+    private FileSystemNode findForCdReturn(String name) {
+        FileSystemNode toReturn = null;
+        for (int i = 0; i < currentDirectory.getChildren().size(); i++) {
+            if (currentDirectory.getChildren().get(i).getName().equals(name)) {
+                toReturn = currentDirectory.getChildren().get(i);
+            }
+        }
+        return toReturn;
+    }
     // in progress
+
+    // END OF CD HELPERS
 
     /**
      * Lists all items contained directly in the current directory.
@@ -73,7 +154,11 @@ public class Navigator {
         // TODO: print names of all child nodes of currentDirectory
         for (int i = 0; i < currentDirectory.getChildren().size(); i++) {
             // System.out.println("here");
-            System.out.println(currentDirectory.getChildren().get(i).getName());
+            System.out.print(currentDirectory.getChildren().get(i).getName());
+            if (currentDirectory.getChildren().get(i).isFolder()) {
+                System.out.print("/");
+            }
+            System.out.println();
         }
     }
     // not done
@@ -106,37 +191,71 @@ public class Navigator {
      */
     private void find(String[] args) {
         // TODO: use recursive search starting at currentDirectory
-        for (int i = 0; i < currentDirectory.getChildren().size(); i++) {
-            if (currentDirectory.getChildren().get(i).getName().equals(args[1])) {
+        if (args.length == 0) {
+            return;
+        }
+        FolderNode save = currentDirectory;
+        findHelper(args[0]);
+        currentDirectory = save;
+    }
+    // DONE
 
+    private void findHelper(String toFind) {
+        // String toReturn = "";
+        for (int i = 0; i < currentDirectory.getChildren().size(); i++) {
+            if (currentDirectory.getChildren().get(i).getName().equals(toFind)) {
+                System.out.println(currentDirectory.getChildren().get(i));
             }
             if (currentDirectory.getChildren().get(i).isFolder()) {
-                // FolderNode thisFolder = (FolderNode) currentDirectory.getChildren().get(i);
-                // Navigator thisNav = new Navigator(thisFolder);
-                // thisNav.find(args);
+                FolderNode thisFolder = (FolderNode) currentDirectory.getChildren().get(i);
+                currentDirectory = thisFolder;
+                findHelper(toFind);
             }
         }
+        // return toReturn;
     }
-    // in progress
 
     /**
      * Prints the absolute path of the current directory, from the root to this node.
      */
-    private void pwd(String[] args) {
+    public void pwd(String[] args) {
         // TODO: use currentDirectory.toString() or similar path builder
-        currentDirectory.toString();
+        System.out.println(currentDirectory.toString());
     }
-    // DONE
+    // DONE (nvm)
+    // also made public?
 
     /**
      * Displays the contents of the current directory as a tree, optionally
      * respecting flags or depth limits if provided by the arguments.
      */
-    private void tree(String[] args) {
+    public void tree(String[] args) {
         // TODO: implement tree-style printing with indentation and branch characters
-        fileSystem.toString();
-
+        treeHelper(currentDirectory, 0);
     }
+    // changed to public
+    
+    private void treeHelper(FolderNode curr, int tabNumber) {
+        for (int i = 0; i < curr.getChildren().size(); i++) {
+            System.out.print("|");
+            if (tabNumber > 0) {
+                System.out.print("   ");
+                for (int j = 1; j < tabNumber; j++) {
+                    System.out.print("    ");
+                }
+                System.out.print("|");
+            }
+            System.out.print("---");
+            System.out.println(curr.getChildren().get(i).getName());
+            if (curr.getChildren().get(i).isFolder() //was using currentDirectory instead of curr!
+                    && ((FolderNode) curr.getChildren().get(i)).getHeight() >= 1) {
+                FolderNode newCurr = (FolderNode) curr.getChildren().get(i);
+                treeHelper(newCurr, tabNumber+1); // need ++ before, otherwise it'll add AFTER line, also ++ modified for future
+            }
+        }
+    }
+    // i think stack overflow is result of issue w/ size maybe??
+    // would be really evil if they put the folders in each other (!!!)
 
     /**
      * Prints how many nodes (files and folders) exist in the current directory
@@ -169,22 +288,30 @@ public class Navigator {
     /**
      * Prints the total size of all files reachable from the current directory.
      */
-    private void size(String[] args) {
+    public void size(String[] args) {
         // TODO: call a size-calculation method on currentDirectory
-        int count = 0;
-        if (currentDirectory.isFolder()) {
-            for (int i = 0; i < currentDirectory.getChildren().size(); i++) {
-                if (!currentDirectory.getChildren().get(i).isFolder()) {
-                    // FolderNode prevDirectory = currentDirectory;
-                    count += currentDirectory.getChildren().get(i).getSize();
-                    currentDirectory = (FolderNode) currentDirectory.getChildren().get(i);
-                    // return curr + countHelper();
-                }
-            }
-        }
+        FolderNode save = currentDirectory;
+        System.out.println(sizeHelper(currentDirectory));
+        currentDirectory = save;
         // return curr;
     }
     // in progress
+    // made public
+
+    private int sizeHelper(FolderNode curr) {
+        int count = 0;
+        if (curr.isFolder()) {
+            for (int i = 0; i < curr.getChildren().size(); i++) {
+                if (curr.getChildren().get(i).isFolder()) {
+                    count += sizeHelper((FolderNode) curr.getChildren().get(i));
+                } else {
+                    count += curr.getChildren().get(i).getSize();
+                }
+            }
+        }
+        return count;
+    }
+    // had to do curr
 
     /**
      * Prints the depth of the current directory, defined as the number of edges
@@ -192,7 +319,16 @@ public class Navigator {
      */
     private void depth(String[] args) {
         // TODO: use a depth method on currentDirectory
+        FolderNode save = currentDirectory;
+        int counter = 0;
+        String[] toCd = { ".." };
+        while (!currentDirectory.getName().equals("/")) {
+            counter++;
+            cd(toCd);
+        }
+        System.out.println(counter);
     }
+    // DONE
 
     /**
      * Prints the height of the current directory, defined as the longest downward
@@ -201,7 +337,24 @@ public class Navigator {
      */
     private void height(String[] args) {
         // TODO: use a height method on currentDirectory
+        // System.out.println(heightHelper(currentDirectory));
+        System.out.println(currentDirectory.getHeight());
     }
+
+    // private int heightHelper(FolderNode curr) {
+    //     if (currentDirectory.getChildren().size() == 0) {
+    //         return 0;
+    //     }
+    //     int counter = 0;
+    //     for (int i = 0; i < currentDirectory.getChildren().size(); i++) {
+    //         if (currentDirectory.getChildren().get(i).isFolder()
+    //                 && heightHelper((FolderNode) currentDirectory.getChildren().get(i)) > counter) {
+    //             counter = heightHelper((FolderNode) currentDirectory.getChildren().get(i));
+    //         }
+    //     }
+    //     return counter;
+    // }
+    // DONE
 
     /**
      * Signals that the interactive loop should terminate after the current command.
@@ -209,6 +362,7 @@ public class Navigator {
     private void quit(String[] args) {
         shouldExit = true;
     }
+    // not me
 
     /**
      * Interprets a line of user input by splitting it into a command and arguments,
