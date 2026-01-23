@@ -55,11 +55,15 @@ public class Arithmetic {
 		int index = 0;
 		String currString = "";
 		while (exp.charAt(index) != ' ') {
+			System.out.println("here");
 			currString = currString + exp.charAt(index);
 			index++;
 			if (index == exp.length()) {
 				// do something to exit loop
 			}
+		}
+		if (exp.charAt(index) == ' ') {
+			index++;
 		}
 		// System.out.println(currString);
 		if (isNum(currString)) {
@@ -69,10 +73,19 @@ public class Arithmetic {
 		if (currString.length() == 1 && isOp(currString)) {
 			stack.push(operate((int) stack.pop(), (int) stack.pop(), currString));
 		}
-		if (index <= exp.length()) {
-			return evaluateStoutHelper(exp.substring(index), stack);
+		System.out.println(exp.length());
+		System.out.println(index);
+		if (index >= exp.length()) {
+			System.out.println("here2");
+			return (int) stack.pop();
 		}
-		return (int) stack.pop();
+		// if (index < exp.length()) {
+		// 	System.out.println("here2");
+		// 	System.out.println(exp.length());
+		// 	System.out.println(index);
+
+		// }
+		return evaluateStoutHelper(exp.substring(index), stack);
 	}
 	
 	public static String convertClassicToStout(String exp) {
@@ -114,7 +127,14 @@ public class Arithmetic {
 	}
 
 	public static boolean isOp(Object op) {
-		if (op != "+" && op != "-" && op != "*" && op != "/") {
+		if (op != "+" && op != "-" && op != "*" && op != "/" && op != "^" && op != "%") {
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean isParen(Object op) {
+		if (op != "(" && op != ")") {
 			return false;
 		}
 		return true;
@@ -128,15 +148,17 @@ public class Arithmetic {
 		// may be mixing up true and false??
 	}
 	
-	public static int giveVal(Object op){
+	public static int giveVal(Object op) {
 		if (op == "+" || op == "-") {
 			return 1;
 		}
-		if (op == "*" || op == "/") {
+		if (op == "*" || op == "/" || op == "%") {
 			return 2;
 		}
 		return 0;
 	}
+	
+	// NEEDED: ), ^, /, +, :), *, -, %, (
 	
 	
 }
