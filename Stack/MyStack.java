@@ -48,4 +48,11 @@ public class MyStack<E>{
     public Object peek() {
         return head.getValue();
     }
+
+    public String toString() {
+        if (empty()) {
+            return "empty";
+        }
+        return (String) peek();
+    }
 }
