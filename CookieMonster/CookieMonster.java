@@ -8,8 +8,8 @@ public class CookieMonster {
 
     private int [][] cookieGrid;
     private int numRows;
-    private int numCols;
-    
+	private int numCols;
+	
     //Constructs a CookieMonster from a file with format:
     //numRows numCols
     //<<rest of the grid, with spaces in between the numbers>>
@@ -47,6 +47,7 @@ public class CookieMonster {
     //You may find it VERY helpful to write this helper method.  Or not!
 	private boolean validPoint(int row, int col) {
 		//Write this if you want
+		if(row >= cookieGrid.length || col >=cookieGrid[1].length)
 		if (cookieGrid[row][col] == -1) {
 			return false;
 		}
@@ -72,7 +73,7 @@ public class CookieMonster {
 			return recursiveCookies(row + 1, col, test.getCookiesDiscovered());
 		}
 		else if (test.getCookiesDiscovered() >= cookiesFound && col < cookieGrid[1].length -1) {
-			recursiveCookies(row, col + 1, test.getCookiesDiscovered());
+			return recursiveCookies(row, col + 1, test.getCookiesDiscovered());
 		}
 		return cookiesFound;
 		// DONE
@@ -85,11 +86,27 @@ public class CookieMonster {
     public int queueCookies() {
 		//CODE THIS
 		Queue<OrphanScout> orphans = new LinkedList<>();
-		OrphanScout test = new OrphanScout(0, 0, cookieGrid[0][0]);
-		if (test.getCookiesDiscovered() != -1) {
-			
+		int row = 0;
+		int col = 0;
+		int adder = 0;
+		OrphanScout test = new OrphanScout(row, col, cookieGrid[0][0]);
+		orphans.add(test);
+		int cookiesFound = test.getCookiesDiscovered();
+		int maxCookies = test.getCookiesDiscovered();
+		while (maxCookies <= maxCookies + orphans.peek().getCookiesDiscovered() && row + adder < cookieGrid.length - 1
+				&& col + adder < cookieGrid[1].length - 1) {
+			adder++;
+			maxCookies = maxCookies + orphans.remove().getCookiesDiscovered();
+			orphans.add(new OrphanScout(row + adder, col, cookiesFound + cookieGrid[row + adder][col]));
+			orphans.add(new OrphanScout(row, col + adder, cookiesFound + cookieGrid[row][col + adder]));
 		}
-		return 0;
+		while (orphans.peek() != null) {
+			if (maxCookies <= maxCookies + orphans.peek().getCookiesDiscovered()) {
+				maxCookies = maxCookies + orphans.remove().getCookiesDiscovered();
+			}
+		}
+		return maxCookies;
+		// queue of orphans, each time you see a square is viable, you send one to either square next to that and the greater one to the queue
     }
 
     

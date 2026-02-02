@@ -21,7 +21,7 @@ public class CookieMonsterTester {
 	public static void main(String[] args)
 	{
 		String[] fileNames = {"cookies0.txt", "cookies1.txt", "cookies2.txt"};
-
+    	// 62, 359, 2512
 
 		Scanner kboard = new Scanner(System.in);
 		System.out.print("Enter the cookies file name or press ENTER for 3 default test cases: ");
