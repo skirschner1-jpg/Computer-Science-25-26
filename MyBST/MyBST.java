@@ -39,23 +39,23 @@ public class MyBST<E extends Comparable<E>> {
 		Comparable val = toAdd.getValue();
 		if (val.compareTo(thisNode.getValue()) < 0) {
 			if (thisNode.hasLeft()) { // skipping this but thisNode does have left??????? wait no it doesn't then why is it replacing :(
-				height++;
+				// height++;
 				addHelper(thisNode.getLeft(), toAdd, height);
 			} else { //NEED ELSE, was doing both :(
 				thisNode.setLeft(toAdd);
 				toAdd.setParent(thisNode);
-				toAdd.setHeight(height); // HAVE TO ACTUALLY ADD TO HEIGHT! >:(, DONE i think
+				// toAdd.setHeight(height); // HAVE TO ACTUALLY ADD TO HEIGHT! >:(, DONE i think
 				return true; 
 			}
 		}
 		else if (val.compareTo(thisNode.getValue()) > 0) {
 			if (thisNode.hasRight()) {
-				height++;
+				// height++;
 				addHelper(thisNode.getRight(), toAdd, height);
 			} else {
 				thisNode.setRight(toAdd);
 				toAdd.setParent(thisNode);
-				toAdd.setHeight(height);
+				// toAdd.setHeight(height);
 				return true;
 			}
 		} else {
@@ -129,7 +129,7 @@ public class MyBST<E extends Comparable<E>> {
 		// rehoming
 		BinaryNode replacementParent = replacement.getParent();
 		if (replacement.hasLeft()) {
-			decreaseHeight(replacement.getLeft());
+			// decreaseHeight(replacement.getLeft());
 			replacementParent.setRight(replacement.getLeft());
 		} else {
 			replacementParent.setRight(null); // problematic if replacement is just one down from toRemove

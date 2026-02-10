@@ -20,7 +20,7 @@ public class CookieMonsterTester {
 	 */
 	public static void main(String[] args)
 	{
-		String[] fileNames = {"cookies0.txt", "cookies1.txt", "cookies2.txt"};
+		String[] fileNames = {"cookies0.txt", "cookies1.txt", "cookies2.txt", "cookies3.txt"};
     	// 62, 359, 2512
 
 		Scanner kboard = new Scanner(System.in);

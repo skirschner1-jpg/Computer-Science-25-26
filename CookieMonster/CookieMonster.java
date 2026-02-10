@@ -72,8 +72,11 @@ public class CookieMonster {
 		else if (test.getCookiesDiscovered() >= cookiesFound && row < cookieGrid.length-1) {
 			return recursiveCookies(row + 1, col, test.getCookiesDiscovered());
 		}
-		else if (test.getCookiesDiscovered() >= cookiesFound && col < cookieGrid[1].length -1) {
+		else if (test.getCookiesDiscovered() >= cookiesFound && col < cookieGrid[row].length - 1) {
 			return recursiveCookies(row, col + 1, test.getCookiesDiscovered());
+		}
+		else if (test.getCookiesDiscovered() >= cookiesFound) {
+			return test.getCookiesDiscovered();
 		}
 		return cookiesFound;
 		// DONE
@@ -86,26 +89,35 @@ public class CookieMonster {
     public int queueCookies() {
 		//CODE THIS
 		Queue<OrphanScout> orphans = new LinkedList<>();
-		int row = 0;
-		int col = 0;
-		int adder = 0;
-		OrphanScout test = new OrphanScout(row, col, cookieGrid[0][0]);
-		orphans.add(test);
-		int cookiesFound = test.getCookiesDiscovered();
-		int maxCookies = test.getCookiesDiscovered();
-		while (maxCookies <= maxCookies + orphans.peek().getCookiesDiscovered() && row + adder < cookieGrid.length - 1
-				&& col + adder < cookieGrid[1].length - 1) {
-			adder++;
-			maxCookies = maxCookies + orphans.remove().getCookiesDiscovered();
-			orphans.add(new OrphanScout(row + adder, col, cookiesFound + cookieGrid[row + adder][col]));
-			orphans.add(new OrphanScout(row, col + adder, cookiesFound + cookieGrid[row][col + adder]));
+		OrphanScout thisOrphan = new OrphanScout(0, 0, cookieGrid[0][0]);
+		int maxCookies = thisOrphan.getCookiesDiscovered();
+		if(maxCookies == -1){
+			return 0;
 		}
-		while (orphans.peek() != null) {
-			if (maxCookies <= maxCookies + orphans.peek().getCookiesDiscovered()) {
-				maxCookies = maxCookies + orphans.remove().getCookiesDiscovered();
+		orphans.add(thisOrphan);
+		while (!orphans.isEmpty()) {
+			// System.out.println("row: " + row + " col: " + col);
+			OrphanScout currOrphan = orphans.remove();
+			int row = currOrphan.getEndingRow();
+			int col = currOrphan.getEndingCol();
+			int nextRow = row + 1;
+			int nextCol = col + 1;
+			int cookiesDiscovered = currOrphan.getCookiesDiscovered();
+			if (cookiesDiscovered > maxCookies) {
+				maxCookies = cookiesDiscovered;
+			}
+			if (nextCol < cookieGrid[1].length && cookieGrid[row][nextCol] != -1) {
+				orphans.add(new OrphanScout(row, nextCol, cookiesDiscovered + cookieGrid[row][nextCol]));
+			}
+			if (nextRow < cookieGrid.length && cookieGrid[nextRow][col] != -1) {
+				orphans.add(new OrphanScout(nextRow, col, cookiesDiscovered + cookieGrid[nextRow][col]));
+			}
+			if (cookieGrid.length == row && cookieGrid[1].length == col) {
+				orphans.add(new OrphanScout(row, col, cookiesDiscovered + cookieGrid[row][col]));
 			}
 		}
 		return maxCookies;
+		// how do we add up the right numbers???
 		// queue of orphans, each time you see a square is viable, you send one to either square next to that and the greater one to the queue
     }
 
@@ -115,7 +127,35 @@ public class CookieMonster {
     /* From any given position, always add the path right before adding the path down */
 	public int stackCookies() {
 		//CODE THIS
-		return 0;
+		Stack<OrphanScout> orphans = new Stack<>();
+		OrphanScout thisOrphan = new OrphanScout(0, 0, cookieGrid[0][0]);
+		int maxCookies = thisOrphan.getCookiesDiscovered();
+		if(maxCookies == -1){
+			return 0;
+		}
+		orphans.add(thisOrphan);
+		while (!orphans.isEmpty()) {
+			// System.out.println("row: " + row + " col: " + col);
+			OrphanScout currOrphan = orphans.pop();
+			int row = currOrphan.getEndingRow();
+			int col = currOrphan.getEndingCol();
+			int nextRow = row + 1;
+			int nextCol = col + 1;
+			int cookiesDiscovered = currOrphan.getCookiesDiscovered();
+			if (cookiesDiscovered > maxCookies) {
+				maxCookies = cookiesDiscovered;
+			}
+			if (nextCol < cookieGrid[1].length && cookieGrid[row][nextCol] != -1) {
+				orphans.add(new OrphanScout(row, nextCol, cookiesDiscovered + cookieGrid[row][nextCol]));
+			}
+			if (nextRow < cookieGrid.length && cookieGrid[nextRow][col] != -1) {
+				orphans.add(new OrphanScout(nextRow, col, cookiesDiscovered + cookieGrid[nextRow][col]));
+			}
+			if (cookieGrid.length == row && cookieGrid[1].length == col) {
+				orphans.add(new OrphanScout(row, col, cookiesDiscovered + cookieGrid[row][col]));
+			}
+		}
+		return maxCookies;
 	}
 	
 	public static int returnGreater(int int1, int int2){
