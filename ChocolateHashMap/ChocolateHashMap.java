@@ -20,6 +20,10 @@ public class ChocolateHashMap<K, V> {
         this.loadFactorLimit = loadFactorLimit;
     }
 
+    public double loadFactorLimit() {
+        return loadFactorLimit;
+    }
+
     // Constructor: creates an empty hash map with default parameters
     public ChocolateHashMap() {
         this(10, 0.75);
@@ -56,10 +60,17 @@ public class ChocolateHashMap<K, V> {
         // DONE
     }
 
+    private int whichBucket(K key, int newSize) {
+        // TODO: implement
+        return Math.abs(key.hashCode() % newSize);
+        // throw new UnsupportedOperationException("TODO: implement whichBucket");
+        // DONE
+    }
+
     // Returns the current load factor (objCount / buckets)
     public double currentLoadFactor() {
         // TODO: implement
-        return objectCount / buckets.length;
+        return (double)objectCount / (double)buckets.length;
         // throw new UnsupportedOperationException("TODO: implement currentLoadFactor");
         // DONE
     }
@@ -68,10 +79,25 @@ public class ChocolateHashMap<K, V> {
     // Use the .equals method to check equality.
     public boolean containsKey(K key) {
         // TODO: implement
-        if (buckets[whichBucket(key)].equals(key)) {
-            return true;
-        } // may need to do while for bucket
+        int index = whichBucket(key);
+        
+        boolean notBeenHere = true;
+        BatchNode thisNode = buckets[index];
+        while (notBeenHere || !thisNode.isSentinel()) {
+            notBeenHere = false;
+            if (!thisNode.isSentinel()) {
+                if (((ChocolateEntry) thisNode.getEntry()).getKey().equals(key)) {
+                    return true;
+                }
+            }
+            thisNode = thisNode.getNext();
+        }
+        
         return false;
+        // if (get(key) != null) {
+        //     return true;
+        // }
+        // return false;
         // throw new UnsupportedOperationException("TODO: implement containsKey");
         // DONE
     }
@@ -81,8 +107,22 @@ public class ChocolateHashMap<K, V> {
     public boolean containsValue(V value) {
         // TODO: implement
         for (int i = 0; i < buckets.length; i++) {
-            if (buckets[i].equals(value)) {
-                return true;
+            boolean notBeenHere = true;
+            // System.out.println("here");
+            BatchNode thisNode = buckets[i];
+            while (notBeenHere || !thisNode.isSentinel()) {
+                notBeenHere = false;
+                // System.out.println("here");
+                if (!thisNode.isSentinel()) {
+                    // System.out.println("here");
+                    if (((ChocolateEntry) thisNode.getEntry()).getValue() == null && value == null) {
+                        return true;
+                    }
+                    if (((ChocolateEntry) thisNode.getEntry()).getValue().equals(value)) {
+                        return true;
+                    }
+                }
+                thisNode = thisNode.getNext();
             }
         }
         return false;
@@ -98,10 +138,53 @@ public class ChocolateHashMap<K, V> {
     // - If so, you must call rehash with double the current bucket size.
     public boolean put(K key, V value) {
         // TODO: implement
-        if (containsKey(key)) {
+        if (key == null) {
             return false;
         }
-        
+        if (containsKey(key)) {
+            // System.out.println("HERE");
+            return false;
+        }
+        int index = whichBucket(key);
+        ChocolateEntry newChocolate = new ChocolateEntry(key, value);
+        BatchNode newEntry = new BatchNode<>(newChocolate);
+        BatchNode thisNode = buckets[index];
+        while (!thisNode.getNext().isSentinel()) {
+            thisNode = thisNode.getNext();
+        }
+        BatchNode sentinel = thisNode.getNext();
+        thisNode.setNext(newEntry);
+        newEntry.setPrevious(thisNode);
+        newEntry.setNext(sentinel);
+        sentinel.setPrevious(newEntry);
+        // int prev = index - 1;
+        // if (index == 0) {
+        //     prev = 0;
+        // }
+        // BatchNode newNode = new BatchNode(newChocolate, buckets[prev], buckets[index + 1]);   
+        // if (buckets[index].getEntry()!= null && buckets[index].getEntry().getKey().equals(key)) {
+        //     return false;
+        // }
+        // if (buckets[index].isSentinel() && buckets[index].getPrevious().isSentinel()) {
+        //     buckets[index] = newNode;
+        // }
+        // else {
+        //     BatchNode thisNode = buckets[index];
+        //     BatchNode sentinel = thisNode;
+        //     while (!buckets[index].getNext().isSentinel()) {
+        //         if (((ChocolateEntry)thisNode.getEntry()).getKey().equals(key)) {
+        //             return false;
+        //         }
+        //         thisNode = thisNode.getNext();
+        //     }
+        //     thisNode.setNext(newNode);
+        //     newNode.setNext(sentinel);
+        // }
+        objectCount++;
+        if ((double) currentLoadFactor() > (double) loadFactorLimit) {
+            System.out.println("here");
+            rehash(buckets.length * 2);
+        }
         return true;
         // throw new UnsupportedOperationException("TODO: implement put");
     }
@@ -110,14 +193,57 @@ public class ChocolateHashMap<K, V> {
     // If the key is not in the map, then return null.
     public V get(K key) {
         // TODO: implement
-        throw new UnsupportedOperationException("TODO: implement get");
+        int index = whichBucket(key);
+        BatchNode thisNode = buckets[index];
+        if (thisNode == null) {
+            return null;
+        }
+        boolean notBeenHere = true;
+        while (notBeenHere || !thisNode.isSentinel()) {
+            notBeenHere = false;
+            if (!thisNode.isSentinel() && ((ChocolateEntry) thisNode.getEntry()).getKey().equals(key)) {
+                return (V) ((ChocolateEntry) thisNode.getEntry()).getValue();
+            }
+            thisNode = thisNode.getNext();
+        }
+        return null;
+        // DONE
+        // throw new UnsupportedOperationException("TODO: implement get");
     }
 
     // Remove the pair associated with the key.
     // Return true if successful, false if the key did not exist.
     public boolean remove(K key) {
         // TODO: implement
-        throw new UnsupportedOperationException("TODO: implement remove");
+        int index = whichBucket(key);
+        BatchNode thisNode = buckets[index];
+        if (thisNode == null) {
+            return false;
+        }
+        if (!containsKey(key)) {
+            return false;
+        }
+        boolean notBeenHere = true;
+        while (notBeenHere || !thisNode.isSentinel()) {
+            notBeenHere = false;
+            if (!thisNode.isSentinel() && ((ChocolateEntry) thisNode.getEntry()).getKey().equals(key)) {
+                // if (thisNode.getNext().isSentinel() && thisNode.getPrevious().isSentinel()) {
+                //     BatchNode sentinel = thisNode.getNext();
+                //     thisNode.getNext().setPrevious(sentinel);
+                //     thisNode.getNext().setNext(sentinel);
+                //     return true;
+                // }
+                BatchNode next = thisNode.getNext();
+                BatchNode prev = thisNode.getPrevious();
+                next.setPrevious(prev);
+                prev.setNext(next);
+                objectCount--;
+                return true;
+            }
+            thisNode = thisNode.getNext();
+            // throw new UnsupportedOperationException("TODO: implement remove");
+        }
+        return false;
     }
 
     // Rehash the map so that it contains the given number of buckets
@@ -127,7 +253,37 @@ public class ChocolateHashMap<K, V> {
     // followed by Z, then K.
     public void rehash(int newBucketCount) {
         // TODO: implement
-        throw new UnsupportedOperationException("TODO: implement rehash");
+        BatchNode<ChocolateEntry<K, V>>[] newBuckets = new BatchNode[newBucketCount];
+        fillArrayWithSentinels(newBuckets);
+        for (int i = 0; i < buckets.length; i++) {
+            BatchNode thisNode = buckets[i];
+            boolean notBeenHere = true;
+            while (notBeenHere || !thisNode.isSentinel()) {
+                notBeenHere = false;
+                if (!thisNode.isSentinel()) {
+                    int index = whichBucket((K) ((ChocolateEntry) thisNode.getEntry()).getKey(), newBucketCount);
+                    ChocolateEntry newChocolate = ((ChocolateEntry) thisNode.getEntry());
+                    BatchNode newEntry = new BatchNode<>(newChocolate);
+                    BatchNode homeBucket = newBuckets[index];
+                    while (!homeBucket.getNext().isSentinel()) {
+                        homeBucket = homeBucket.getNext();
+                    }
+                    BatchNode sentinel = homeBucket.getNext();
+                    homeBucket.setNext(newEntry);
+                    newEntry.setPrevious(homeBucket);
+                    newEntry.setNext(sentinel);
+                    sentinel.setPrevious(newEntry);
+                }
+                thisNode = thisNode.getNext(); // THTKJHSDGKJHSRTKLHERTEKJH
+            }
+
+            // while (!buckets[i].getNext().isSentinel()) {
+            //     whichBucket((K) ((ChocolateEntry) thisNode.getEntry()).getKey(), newBucketCount);
+            // }
+        }
+        System.out.println(newBucketCount);
+        buckets = newBuckets;
+        // throw new UnsupportedOperationException("TODO: implement rehash");
     }
 
     // The output should be in the following format:
@@ -141,6 +297,33 @@ public class ChocolateHashMap<K, V> {
     @Override
     public String toString() {
         // TODO: implement
-        throw new UnsupportedOperationException("TODO: implement toString");
+        String toReturn = "[ " + objectCount + ", " + buckets.length + " | ";
+        for (int i = 0; i < buckets.length; i++) {
+            BatchNode thisNode = buckets[i];
+            if (!(thisNode.isSentinel() && thisNode.getNext().isSentinel())) {
+                toReturn += " { b" + i + ": ";
+            
+            
+                boolean notBeenHere = true;
+                while (notBeenHere || !thisNode.isSentinel()) {
+                    notBeenHere = false;
+                    if (!thisNode.isSentinel()) {
+                        toReturn += ((ChocolateEntry) thisNode.getEntry()).getKey() + ",";
+                        toReturn += ((ChocolateEntry) thisNode.getEntry()).getValue() + " ";
+                    }
+                    thisNode = thisNode.getNext();
+                }
+                toReturn += "}";
+            }
+
+            // while (!buckets[i].getNext().isSentinel()) {
+            //     toReturn += ((ChocolateEntry) thisNode.getEntry()).getKey() + ",";
+            //     toReturn += ((ChocolateEntry) thisNode.getEntry()).getValue() + " ";
+            // }
+        }
+        toReturn += " ]";
+        return toReturn;
+        // DONE
+        // throw new UnsupportedOperationException("TODO: implement toString");
     }
 }
