@@ -1,50 +1,73 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class MiniGPT {
 
-	public MiniGPT(String fileName, int chainOrder) {
-
-	}
-
-	
-	public void generateText(String outputFileName, int numChars) {
-
-	}
-	
-
-	private ArrayList<ArrayList<String>> lists = new ArrayList<ArrayList<String>>();
+    private String fileName;
     private Random random = new Random();
+    private int numChars;
+    private HashMap<String, ArrayList<Character>> lists = new HashMap<String, ArrayList<Character>>();
 
-    public ArrayList<ArrayList<String>> getLists() {
-        return lists;
+	public MiniGPT(String fileName, int chainOrder) {
+        this.fileName = fileName;
+        this.numChars = chainOrder;
+        this.lists = readData();
+	}
+
+	
+	public void generateText(String outputFileName) {
+        // ArrayList<ArrayList<String>> lists = readData();
+        Object[] keys = lists.keySet().toArray();
+        // String toReturn = (String) keys[(randomNum(keys.length))];
+        String toReturn = "In my y";
+        String currContext = toReturn;
+        for (int i = 0; i < 240000; i++) {
+            char toAdd = predictNextState(currContext);
+            toReturn += toAdd;
+            currContext = currContext.substring(1) + toAdd;
+        }
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFileName))) {
+            bw.write(toReturn);
+        } 
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+	}
+
+    public String getFile() {
+        return fileName;
     }
 
-    public ArrayList<ArrayList<String>> readData(String filePath) {
-
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+    public HashMap<String, ArrayList<Character>> readData() {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
+            String totalText = "";
             while ((line = br.readLine()) != null) {
+                totalText += line;
+            }
+            int startingIndex = 0;
+            String currContext = totalText.substring(startingIndex, numChars);
+            for (int i = numChars; i < totalText.length(); i++) {
                 boolean sorted = false;
-                for (int i = 0; i < lists.size(); i++) {
-                    if (lists.get(i).get(0).equals(beforeComma(line))) {
-                        lists.get(i).add(afterComma(line));
-                        sorted = true;
-                    }
+                if (lists.containsKey(currContext)) {
+                    lists.get(currContext).add(totalText.charAt(i));
                 }
-                if (!sorted) {
-                    ArrayList<String> addition = new ArrayList<String>();
-                    addition.add(beforeComma(line));
-                    addition.add(afterComma(line));
-                    lists.add(addition);
+                else {
+                    ArrayList<Character> addition = new ArrayList<Character>();
+                    addition.add(totalText.charAt(i));
+                    lists.put(currContext, addition);
                 }
-
+                startingIndex++;
+                currContext = totalText.substring(startingIndex, numChars + startingIndex);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,41 +77,11 @@ public class MiniGPT {
 
 
     // Method to predict the next state given a current state
-    public String predictNextState(String currentState) {
-        for (int i = 0; i < lists.size(); i++) {
-            if (lists.get(i).get(0).equals(beforeComma(currentState))) {
-                return lists.get(i).get(randomNum(lists.get(i).size()));
-            }
+    public char predictNextState(String currentState) {
+        if (lists.containsKey(currentState)) {
+            return lists.get(currentState).get(randomNum(lists.get(currentState).size()));
         }
-        return null;
-    }
-    
-    // HELPERS
-    public String beforeComma(String pair) {
-        String toReturn = "";
-        boolean done = false;
-        for (int i = 0; i < pair.length(); i++) {
-            if (pair.charAt(i) != ',' && !done) {
-                toReturn += pair.charAt(i);
-            } else {
-                done = true;
-            }
-        }
-        return toReturn;
-    }
-    
-    public String afterComma(String pair) {
-        String toReturn = "";
-        boolean afterComma = false;
-        for (int i = 0; i < pair.length(); i++) {
-            if (afterComma) {
-                toReturn += pair.charAt(i);
-            }
-            if (pair.charAt(i) == ',') {
-                afterComma = true;
-            }
-        }
-        return toReturn;
+        return '$';
     }
     
     public int randomNum(int max) {
